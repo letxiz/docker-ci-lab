@@ -1,7 +1,7 @@
 # Atividade Docker + CI — Letícia Alves dos Santos
 
 **Aluno(a):** Letícia Alves dos Santos  
-**Turma:** ITeam Noite  
+**Turma:** Iteam Noite  
 **Data:** 23/07/2026  
 **Aplicação usada:** docker/getting-started-app (To-Do em Node.js)
 
@@ -10,8 +10,8 @@
 # 1. Como executar este projeto
 
 ```bash
-git clone [URL DO SEU REPOSITÓRIO]
-cd meu-projeto-docker
+git clone https://github.com/letxiz/docker-ci-lab.git
+cd docker-ci-lab
 
 cp .env.example .env
 
@@ -24,13 +24,13 @@ Acesse:
 http://localhost:3000
 ```
 
-Para derrubar os containers:
+Para parar os containers:
 
 ```bash
 docker compose down
 ```
 
-ou
+Para remover também os volumes:
 
 ```bash
 docker compose down -v
@@ -40,66 +40,58 @@ docker compose down -v
 
 # 2. Imagem e Dockerfile Multi-stage
 
-**Estágios utilizados**
+## Estágios utilizados
 
-- Builder: instalação das dependências da aplicação.
-- Final: imagem enxuta utilizada para executar a aplicação.
+- **Builder:** responsável por instalar as dependências e preparar a aplicação.
+- **Final:** gera uma imagem menor contendo apenas os arquivos necessários para execução.
 
-**Imagem base**
+## Imagem base
 
 ```
 node:20-alpine
 ```
 
-**Usuário de execução**
+## Usuário de execução
 
 ```
 node (não-root)
 ```
 
-**Tamanho final da imagem**
+## Tamanho final da imagem
 
 ```
 286 MB
 ```
 
-**Por que o multi-stage ajuda?**
+## Por que utilizar multi-stage?
 
-O multi-stage reduz o tamanho da imagem final ao copiar apenas os arquivos necessários para execução da aplicação. Além disso, melhora a segurança ao evitar que arquivos temporários e ferramentas de build sejam incluídos na imagem final.
+O multi-stage build reduz o tamanho da imagem final ao remover arquivos temporários e dependências utilizadas apenas durante o processo de construção, tornando a aplicação mais leve, segura e eficiente.
 
 ## Print 1
 
-> docker build + docker images
+Build da imagem Docker.
 
-```
-docs/imagens/01-build-images.png
-```
-
-```md
-![Build](docs/imagens/01-build-images.png)
-```
+![Build Docker](docs/images/01-build-images.png)
 
 ---
 
 ## Print 2
 
-Aplicação rodando com tarefas cadastradas.
+Aplicação em execução.
 
-```md
-![Aplicação](docs/imagens/02-app.png)
-```
+![Aplicação](docs/images/02-app.png)
 
 ---
 
 # 3. Volumes e Persistência
 
-**Volume utilizado**
+## Volume utilizado
 
 ```
 todo-db
 ```
 
-**Montado em**
+## Diretório utilizado
 
 ```
 /etc/todos
@@ -107,168 +99,191 @@ todo-db
 
 ## Print 3
 
-Sem volume: dados perdidos.
+Com volume: os dados permanecem armazenados mesmo após recriar o container.
 
-```md
-![Sem volume](docs/imagens/03-sem-volume.png)
-```
+![Com Volume](docs/images/03-com-volume.png)
+
+---
 
 ## Print 4
 
-Com volume: dados preservados.
+Sem volume: ao remover o container, os dados são perdidos.
 
-```md
-![Com volume](docs/imagens/04-com-volume.png)
-```
+![Sem Volume](docs/images/04-sem-volume.png)
 
-**Diferença entre `docker compose down` e `docker compose down -v`**
+---
 
-`docker compose down` remove apenas os containers e mantém os volumes. Já `docker compose down -v` remove também os volumes, apagando os dados persistidos.
+## Diferença entre `docker compose down` e `docker compose down -v`
+
+- **docker compose down**: remove apenas os containers, preservando os volumes.
+- **docker compose down -v**: remove os containers e também os volumes, apagando todos os dados persistidos.
 
 ---
 
 # 4. Rede
 
-**Rede criada**
+## Rede criada
 
 ```
 todo-net
 ```
 
-**Serviços conectados**
+## Containers conectados
 
 - app
-- mysql
+- db
 
-**Banco exposto ao host?**
+## O banco de dados ficou exposto ao host?
 
-Não. Apenas a aplicação precisa acessar o banco através da rede Docker.
+Não. Apenas a aplicação consegue acessá-lo através da rede Docker.
 
-**Por que o app consegue acessar o host mysql sem saber o IP?**
+## Como a aplicação encontra o banco usando apenas o nome `db`?
 
-Porque o Docker possui um DNS interno que resolve automaticamente o nome do serviço para o container correspondente.
+O Docker possui um DNS interno que resolve automaticamente o nome do serviço para o container correspondente.
 
 ## Print 5
 
-```md
-![Network](docs/imagens/05-network.png)
-```
+Rede criada.
+
+![Rede Docker](docs/images/05-network.png)
+
+---
 
 ## Print 6
 
-```md
-![MySQL](docs/imagens/06-mysql.png)
-```
+Container MySQL em execução.
+
+![MySQL](docs/images/06-mysql.png)
 
 ---
 
 # 5. Docker Compose
 
-**Serviços**
+## Serviços
 
 - app
 - db
 
-**Rede**
+## Rede
 
 ```
 todo-net
 ```
 
-**Volume**
+## Volume
 
 ```
 todo-db
 ```
 
-**Healthcheck**
+## Healthcheck
 
-```
-db
-```
+Foi utilizado um **healthcheck** para garantir que o banco esteja pronto antes da inicialização da aplicação.
 
-**depends_on**
+## depends_on
 
 ```
 condition: service_healthy
 ```
 
-**Variáveis sensíveis**
+## Variáveis de ambiente
 
-Foram armazenadas em `.env`, mantendo apenas `.env.example` versionado.
+As credenciais foram armazenadas no arquivo `.env`. Apenas o arquivo `.env.example` foi versionado no GitHub.
 
 ## Print 7
 
-```md
-![Compose](docs/imagens/07-compose.png)
-```
+Aplicação funcionando utilizando Docker Compose com persistência dos dados.
+
+![Persistência Compose](docs/images/07-persistencia-compose.png)
+
+---
+
+## Print 8
+
+Reset da persistência após executar `docker compose down -v`, demonstrando que o volume foi removido e os dados anteriores foram apagados.
+
+![Reset do Volume](docs/images/08-compose-volume-reset.png)
 
 ---
 
 # 6. GitHub Actions
 
-**Workflow**
+## Workflow
 
 ```
 .github/workflows/ci.yml
 ```
 
-**Gatilhos**
+## Gatilhos
 
 - push
 - pull_request
 
-O pipeline realiza:
+## Etapas executadas
 
-1. Validação do compose.
+1. Validação do Docker Compose.
 2. Build da imagem.
-3. Inicialização da stack.
-4. Smoke test da aplicação.
+3. Inicialização da aplicação.
+4. Execução do Smoke Test.
 5. Finalização da stack.
 
-## Print 8
+## Print 9
 
-```md
-![CI Verde](docs/imagens/08-ci-verde.png)
-```
+Pipeline executado com sucesso.
+
+![GitHub Actions Verde](docs/images/09-actions-verde.png)
 
 ---
 
 # 7. Quebra proposital do CI
 
-**O que foi quebrado**
+## O que foi quebrado?
 
-> Preencher após realizar a quebra.
+Foi realizada uma alteração proposital na configuração da aplicação para provocar a falha do pipeline de Integração Contínua.
 
-**Erro encontrado**
+## Erro encontrado
 
-> Preencher.
+Durante a execução do GitHub Actions, o pipeline falhou ao executar o Smoke Test, pois a aplicação não conseguiu ser validada corretamente.
 
-**Como o CI reagiu**
+## Como o CI reagiu?
 
-> Preencher.
+O GitHub Actions interrompeu automaticamente a execução do workflow e marcou o pipeline como falho. Através dos logs foi possível identificar a etapa em que ocorreu o erro, facilitando a correção do problema.
 
-**Como foi corrigido**
+## Como foi corrigido?
 
-> Preencher.
+A configuração incorreta foi restaurada, um novo commit foi enviado para a mesma branch e o GitHub Actions executou novamente o pipeline, concluindo todas as etapas com sucesso.
 
-**Link do Pull Request**
+## Print 10
 
-```
-[URL]
-```
+Pipeline com falha após a quebra proposital.
 
-## Print 9
+![GitHub Actions Vermelho](docs/images/10-actions-vermelho.png)
 
-```md
-![CI Vermelho](docs/imagens/09-ci-vermelho.png)
-```
+---
+
+## Como foi corrigido?
+
+O arquivo `.env.example` foi restaurado com as configurações corretas. Após realizar um novo commit e push, o pipeline foi executado novamente com sucesso.
+
+## Print 11
+
+Pipeline executado com sucesso após a correção.
+
+![GitHub Actions Corrigido](docs/images/11-actions-corrigido.png)
+
+---
+
+## Link do Pull Request
+
+https://github.com/letxiz/docker-ci-lab/pull/1
 
 ---
 
 # 8. Dificuldades e aprendizados
 
-Durante a atividade foi possível compreender como funciona a criação de imagens Docker utilizando multi-stage build, além da importância dos volumes para persistência de dados e das redes para comunicação entre containers. Também foi possível entender como o Docker Compose simplifica a orquestração da aplicação e como o GitHub Actions automatiza testes por meio da Integração Contínua (CI).
+A principal dificuldade foi compreender o funcionamento do Docker Compose e como os serviços se relacionam. No entanto, eu já entendia alguns comandos básicos do Docker, o que facilitou o aprendizado.
+
+Além disso, aprendi a importância dos volumes, das redes Docker e do GitHub Actions, percebendo na prática como a Integração Contínua ajuda a identificar erros rapidamente e aumenta a confiabilidade da aplicação.
 
 ---
 
@@ -277,11 +292,11 @@ Durante a atividade foi possível compreender como funciona a criação de image
 - [x] Dockerfile multi-stage
 - [x] .dockerignore
 - [x] Container utilizando usuário não-root
-- [ ] Volume nomeado
-- [ ] Persistência demonstrada
-- [ ] Rede criada
-- [ ] Docker Compose
-- [ ] .env.example
-- [ ] GitHub Actions
-- [ ] PR vermelho → verde
-- [ ] Todos os prints adicionados
+- [x] Volume nomeado
+- [x] Persistência demonstrada
+- [x] Rede criada
+- [x] Docker Compose
+- [x] Arquivo `.env.example`
+- [x] GitHub Actions
+- [x] Pull Request com pipeline vermelho → verde
+- [x] Todos os prints adicionados
