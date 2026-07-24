@@ -21,7 +21,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DB: ${MYSQL_DATABASE}
     depends_on:
       db:
