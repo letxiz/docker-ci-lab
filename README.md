@@ -239,15 +239,19 @@ Pipeline executado com sucesso.
 
 ## O que foi quebrado?
 
-Foi alterado propositalmente o arquivo `.env.example`, modificando uma variável de ambiente para provocar uma falha na execução do pipeline de Integração Contínua.
+Foi realizada uma alteração proposital na configuração da aplicação para provocar a falha do pipeline de Integração Contínua.
 
 ## Erro encontrado
 
-A alteração fez com que a aplicação não fosse inicializada corretamente durante a execução do GitHub Actions, ocasionando a falha do workflow.
+Durante a execução do GitHub Actions, o pipeline falhou ao executar o Smoke Test, pois a aplicação não conseguiu ser validada corretamente.
 
 ## Como o CI reagiu?
 
-O GitHub Actions interrompeu automaticamente a execução do pipeline e marcou a execução como falha (**❌**), exibindo os logs para facilitar a identificação do problema.
+O GitHub Actions interrompeu automaticamente a execução do workflow e marcou o pipeline como falho. Através dos logs foi possível identificar a etapa em que ocorreu o erro, facilitando a correção do problema.
+
+## Como foi corrigido?
+
+A configuração incorreta foi restaurada, um novo commit foi enviado para a mesma branch e o GitHub Actions executou novamente o pipeline, concluindo todas as etapas com sucesso.
 
 ## Print 10
 
@@ -277,13 +281,9 @@ https://github.com/letxiz/docker-ci-lab/pull/1
 
 # 8. Dificuldades e aprendizados
 
-Durante a atividade foi possível compreender o funcionamento do Docker desde a criação de imagens utilizando **multi-stage build** até a execução da aplicação em containers.
+A principal dificuldade foi compreender o funcionamento do Docker Compose e como os serviços se relacionam. No entanto, eu já entendia alguns comandos básicos do Docker, o que facilitou o aprendizado.
 
-Também foi possível aprender sobre a utilização de **volumes** para persistência de dados, **redes Docker** para comunicação entre containers e **Docker Compose** para orquestração dos serviços.
-
-Além disso, a utilização do **GitHub Actions** mostrou como a Integração Contínua automatiza a validação da aplicação, permitindo identificar erros rapidamente e garantindo maior confiabilidade no processo de desenvolvimento.
-
-A etapa de quebra proposital do pipeline permitiu visualizar, na prática, como o CI interrompe automaticamente a execução quando encontra erros de configuração.
+Além disso, aprendi a importância dos volumes, das redes Docker e do GitHub Actions, percebendo na prática como a Integração Contínua ajuda a identificar erros rapidamente e aumenta a confiabilidade da aplicação.
 
 ---
 
