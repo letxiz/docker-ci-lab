@@ -320,25 +320,25 @@ Além disso, aprendi a importância dos volumes, das redes Docker e do GitHub Ac
 
 ## Print 2 — Secrets cadastrados no GitHub (DOCKERHUB_USERNAME e DOCKERHUB_TOKEN)
 
-![Chaves cadastradas no GitHub](docs/images/13-%20chaves-cadastradas.png)
+![Chaves cadastradas no GitHub](docs/images/13-chaves-cadastradas.png)
 
 ---
 
 ## Print 3 — Workflow de CD verde na aba Actions
 
-> Cole aqui o print.
+![CD - Publicar no Docker Hub](docs/images/14-cd%20-publicar%20no%20docker%20hub.png)
 
 ---
 
 ## Print 4 — Imagem publicada no Docker Hub
 
-> Cole aqui o print.
+![Imagem publicada](docs/images/15-imagem-publicada.png)
 
 ---
 
 ## Print 5 — Docker Pull baixando a imagem publicada
 
-> Cole aqui o print.
+![Docker Pull](docs/images/16-docker-pull.png)
 
 ---
 
